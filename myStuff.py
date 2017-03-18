@@ -10,6 +10,8 @@ from mpl_toolkits.mplot3d import Axes3D
 
 from skimage.feature import hog
 
+from sklearn.preprocessing import StandardScaler
+
 from sklearn.model_selection import train_test_split
 
 from sklearn.svm import LinearSVC
@@ -283,16 +285,212 @@ def create_sample_binning_image(cars, rand = 0, img=None):
 	return img
 
 
+def gradient_features(img, sobel_kernel=9, mag_threshold=(60, 255)):
+	gray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
+	sobel_x = cv2.Sobel(gray, cv2.CV_64F, 1, 0, ksize=sobel_kernel)
+	sobel_y = cv2.Sobel(gray, cv2.CV_64F, 0, 1, ksize=sobel_kernel)
+	gradmag = np.sqrt(sobel_x**2 + sobel_y**2)
+	scale_factor = np.max(gradmag)/255
+	gradmag = (gradmag/scale_factor).astype(np.uint8)
+	binary_output = np.zeros_like(gradmag)
+	binary_output[(gradmag >= mag_threshold[0]) & 
+					(gradmag <= mag_threshold[1])] = 1
+	return binary_output
+
+def create_sample_gradient_image(cars, rand=0, img=None):
+	if rand != 0:
+		choice = np.random.randint(0, len(cars))
+		img = cv2.imread(cars[choice])
+
+	binary_output = gradient_features(img)
+
+	fig = plt.figure(figsize=(12, 5))
+	ax_1 = fig.add_subplot(1, 2, 1)
+	fig.tight_layout()
+	matplotlib.rc('xtick', labelsize=20)
+	matplotlib.rc('ytick', labelsize=20)
+	ax_1.imshow(img)
+	ax_1.set_title('Original Image:\n', fontsize=20)
+
+	ax_2 = fig.add_subplot(1, 2, 2)
+	ax_2.imshow(binary_output, cmap='gray')
+	ax_2.set_title('Gradient Image:\n', fontsize=20)
+
+	plt.subplots_adjust(left=0, right=1, top=1, bottom=0)
+	plt.savefig('output_images/sample_gradient_image.png', bbox_inches='tight')
+
+	return img
+
+def get_hog_features(img, 
+				orientations=9, 
+				pixels_per_cell=(8,8),
+				cells_per_block=(2,2),
+				visualise=False,
+				feature_vector=True):
+
+	if (visualise == True):
+		features, hog_image = hog(img,
+						orientations=orientations,
+						pixels_per_cell=pixels_per_cell,
+						cells_per_block=cells_per_block,
+						transform_sqrt=False,
+						visualise=visualise,
+						feature_vector=False)
+		return features, hog_image
+	else:
+		features = hog(img,
+						orientations=orientations,
+						pixels_per_cell=pixels_per_cell,
+						cells_per_block=cells_per_block,
+						transform_sqrt=False,
+						visualise=visualise,
+						feature_vector=feature_vector)
+		return features
+
+def create_sample_hog_image(caars, rand=0, img=None):
+	if rand != 0:
+		choice = np.random.randint(0, len(cars))
+		img = cv2.imread(cars[choice])
+
+	hog_img = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
+
+	features, hog_image = get_hog_features(hog_img, visualise=True)
+
+	fig = plt.figure(figsize=(12, 5))
+	
+	fig.add_subplot(1, 2, 1)
+	matplotlib.rc('xtick', labelsize=20)
+	matplotlib.rc('ytick', labelsize=20)
+	plt.imshow(img)
+	plt.title('Original Image:\n', fontsize=20)
+
+	fig.add_subplot(1, 2, 2)
+	plt.imshow(hog_image, cmap='hot')
+	plt.title('HOG Image:\n', fontsize=20)
+	plt.savefig('output_images/sample_hog_image.png', bbox_inches='tight')
+
+	return img
+
+
+def extract_features_pipeline(images,
+					color_space='RGB',
+					histogram_feature=True,
+					spatial_feature=True,
+					hog_feature=True,
+					spatial_size=(32, 32),
+					hist_bins=32,
+					hist_range=(0, 256), 
+					orientations=9, 
+					pixels_per_cell=(8,8),
+					cells_per_block=(2,2),
+					hog_channel=0):
+	
+	
+	features = []
+
+	for file in tqdm(images):
+		img = mpimg.imread(file)
+
+		file_features = []
+
+		# Convert image to new color space (if specified)
+		if color_space != 'RGB':
+			if color_space == 'HSV':
+				feature_image = cv2.cvtColor(img, cv2.COLOR_RGB2HSV)
+			elif color_space == 'LUV':
+				feature_image = cv2.cvtColor(img, cv2.COLOR_RGB2LUV)
+			elif color_space == 'HLS':
+				feature_image = cv2.cvtColor(img, cv2.COLOR_RGB2HLS)
+			elif color_space == 'YUV':
+				feature_image = cv2.cvtColor(img, cv2.COLOR_RGB2YUV)
+			elif color_space == 'YCrCb':
+				feature_image = cv2.cvtColor(img, cv2.COLOR_RGB2YCrCb)
+		else:
+			feature_image = np.copy(img)
+
+		# spatial
+		if spatial_feature == True:
+			spatial_feature_image, spatial_features = bin_spatial(img, size=spatial_size)
+			file_features.append(spatial_features)
+
+		# histogram
+		if histogram_feature == True:
+			rhist, ghist, bhist, bin_centers, hist_features = color_hist(img, nbins=hist_bins)
+			file_features.append(hist_features)
+
+		# hog
+		if hog_feature == True:
+			if hog_channel == 'ALL':
+				hog_features = []
+				for channel in range(feature_image.shape[2]):
+					hog_features.append(get_hog_features(feature_image[:,:,channel],
+													orientations=orientations,
+													pixels_per_cell=pixels_per_cell,
+													cells_per_block=cells_per_block,
+													visualise=False,
+													feature_vector=True))
+				hog_features = np.ravel(hog_features)
+			else:
+				hog_features = get_hog_features(feature_image[:,:,hog_channel],
+											orientations=orientations,
+											pixels_per_cell=pixels_per_cell,
+											cells_per_block=cells_per_block,
+											visualise=False,
+											feature_vector=True)
+
+			file_features.append(hog_features)
+
+		features.append(np.concatenate(file_features))
+
+	return features
+
+
+def create_sample_scaled_features_image(cars, not_cars):
+	choice = np.random.randint(0, len(cars))
+
+	car_features = extract_features_pipeline(cars)
+	non_car_features = extract_features_pipeline(not_cars)
+
+	if len(car_features) > 0:
+		X = np.vstack((car_features, non_car_features)).astype(np.float64)
+		X_scaler = StandardScaler().fit(X)
+		scaled_X = X_scaler.transform(X)
+
+		fig = plt.figure(figsize=(20, 5))
+		matplotlib.rc('xtick', labelsize=20)
+		matplotlib.rc('ytick', labelsize=20)
+
+		plt.subplot(1, 3, 1)
+		plt.imshow(mpimg.imread(cars[choice]))
+		plt.title('Original Image:\n', fontsize=20)
+
+		plt.subplot(1, 3, 2)
+		plt.plot(X[choice])
+		plt.title('Raw Features:\n', fontsize=20)
+
+		plt.subplot(1, 3, 3)
+		plt.plot(scaled_X[choice])
+		plt.title('Normalized Features:\n', fontsize=20)
+
+		plt.savefig('output_images/sample_scaled_features_image.png')
+
+	else:
+		print('Empty Feature Vectors')
+
+def data_explorataon:
+	get_data_info(vehicles, non_vehicles)
+	show_sample_images(vehicles, non_vehicles)
+	img = create_sample_histogram_img(vehicles)
+	img = create_sample_color_space_img(vehicles, 0, img)
+	img = create_sample_binning_image(vehicles, 0, img)
+	img = create_sample_gradient_image(vehicles, 0, img)
+	img = create_sample_hog_image(vehicles, 0, img)
+
+	create_sample_scaled_features_image(vehicles, non_vehicles)
+
+data_explorataon()
 
 
 
 
 
-
-
-
-get_data_info(vehicles, non_vehicles)
-show_sample_images(vehicles, non_vehicles)
-img = create_sample_histogram_img(vehicles)
-img = create_sample_color_space_img(vehicles, 0, img)
-img = create_sample_binning_image(vehicles, 0, img)
