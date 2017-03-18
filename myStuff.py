@@ -477,7 +477,7 @@ def create_sample_scaled_features_image(cars, not_cars):
 	else:
 		print('Empty Feature Vectors')
 
-def data_explorataon:
+def data_exploration():
 	get_data_info(vehicles, non_vehicles)
 	show_sample_images(vehicles, non_vehicles)
 	img = create_sample_histogram_img(vehicles)
@@ -488,7 +488,9 @@ def data_explorataon:
 
 	create_sample_scaled_features_image(vehicles, non_vehicles)
 
-data_explorataon()
+data_exploration()
+
+
 
 
 
