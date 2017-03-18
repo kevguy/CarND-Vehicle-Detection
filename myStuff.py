@@ -444,12 +444,16 @@ def extract_features_pipeline(images,
 
 	return features
 
+def extract_cars_and_non_cars_features(cars, not_cars):
+	car_features = extract_features_pipeline(cars)
+	non_car_features = extract_features_pipeline(not_cars)
+	return car_features, non_car_features
+
 
 def create_sample_scaled_features_image(cars, not_cars):
 	choice = np.random.randint(0, len(cars))
 
-	car_features = extract_features_pipeline(cars)
-	non_car_features = extract_features_pipeline(not_cars)
+	car_features, non_car_features = extract_cars_and_non_cars_features(cars, not_cars)
 
 	if len(car_features) > 0:
 		X = np.vstack((car_features, non_car_features)).astype(np.float64)
@@ -477,18 +481,55 @@ def create_sample_scaled_features_image(cars, not_cars):
 	else:
 		print('Empty Feature Vectors')
 
-def data_exploration():
-	get_data_info(vehicles, non_vehicles)
-	show_sample_images(vehicles, non_vehicles)
-	img = create_sample_histogram_img(vehicles)
-	img = create_sample_color_space_img(vehicles, 0, img)
-	img = create_sample_binning_image(vehicles, 0, img)
-	img = create_sample_gradient_image(vehicles, 0, img)
-	img = create_sample_hog_image(vehicles, 0, img)
+def data_exploration(cars, not_cars):
+	get_data_info(cars, not_cars)
+	show_sample_images(cars, not_cars)
+	img = create_sample_histogram_img(cars)
+	img = create_sample_color_space_img(cars, 0, img)
+	img = create_sample_binning_image(cars, 0, img)
+	img = create_sample_gradient_image(cars, 0, img)
+	img = create_sample_hog_image(cars, 0, img)
 
-	create_sample_scaled_features_image(vehicles, non_vehicles)
+	create_sample_scaled_features_image(cars, not_cars)
 
-data_exploration()
+
+def data_preprocess(cars, not_cars):
+	car_features, non_car_features = extract_cars_and_non_cars_features(cars, not_cars)
+
+	X = np.vstack((car_features, non_car_features)).astype(np.float64)
+	X_scaler = StandardScaler().fit(X)
+	scaled_X = X_scaler.transform(X)
+
+	y = np.hstack((np.ones(len(car_features)), np.zeros(len(non_car_features))))
+
+	print('scaled_X: {0}'.format(scaled_X.shape))
+	print('y: {0}'.format(y.shape))
+
+	# split the data
+	rand_state = np.random.randint(0, 10)
+	X_train, X_test, y_train, y_test = train_test_split(scaled_X, y,test_size=0.2,random_state=rand_state)
+	print('After splitting,')
+	print('X_train: {0}'.format(X_train.shape))
+
+	return X_train, X_test, y_train, y_test
+
+
+def svm_classifier(X_train, X_test, y_train, y_test):
+	print('Training the SVM Classifier')
+	svc = LinearSVC(C=0.01)
+	t = time.time()
+	svc.fit(X_train, y_train)
+	t2 = time.time()
+	print('Seconds to train: {0}'.format(round(t2-t, 2)))
+	print('Test Accuracy: {0:0.4f}%'.format(svc.score(X_test, y_test)*100))
+	print('  Predictions:', svc.predict(X_test[0:20]))
+	print('       Labels:', y_test[0:20])
+
+
+
+# data_exploration(vehicles, non_vehicles)
+X_train, X_test, y_train, y_test = data_preprocess(vehicles, non_vehicles)
+svm_classifier(X_train, X_test, y_train, y_test)
 
 
 
