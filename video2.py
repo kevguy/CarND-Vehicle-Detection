@@ -420,17 +420,17 @@ def video_pipeline(img):
 
 out_dir='./output_images/'
 
-inpfile='project_video.mp4'
-outfile=out_dir+'processed_'+inpfile
-clip = VideoFileClip(inpfile)
-out_clip = clip.fl_image(video_pipeline)
-out_clip.write_videofile(outfile, audio=False)
-
-# inpfile='test_video.mp4'
+# inpfile='project_video.mp4'
 # outfile=out_dir+'processed_'+inpfile
 # clip = VideoFileClip(inpfile)
 # out_clip = clip.fl_image(video_pipeline)
 # out_clip.write_videofile(outfile, audio=False)
+
+inpfile='test_video.mp4'
+outfile=out_dir+'processed_'+inpfile
+clip = VideoFileClip(inpfile)
+out_clip = clip.fl_image(video_pipeline)
+out_clip.write_videofile(outfile, audio=False)
 
 
 print('fuck')
