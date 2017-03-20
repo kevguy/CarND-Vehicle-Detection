@@ -46,7 +46,7 @@ def get_data_info(cars, not_cars):
 	data_dict = {}
 	data_dict['num_cars'] = len(cars)
 	data_dict['num_not_cars'] = len(not_cars)
-	
+
 	img = mpimg.imread(cars[0])
 	data_dict['img_shape'] = img.shape
 	data_dict['d_type'] = img.dtype
@@ -89,7 +89,7 @@ def show_sample_images(cars, not_cars):
 	plt.savefig('output_images/sample_car_non_car_images.png', bbox_inches="tight")
 
 
-# Define a function to compute color histogram features  
+# Define a function to compute color histogram features
 def color_hist(img, nbins=32, bins_range=(0, 256)):
     # Compute the histogram of the RGB channels separately
     rhist = np.histogram(img[:,:,0], bins=nbins, range=bins_range)
@@ -116,7 +116,7 @@ def create_sample_histogram_img(cars):
 	matplotlib.rc('ytick', labelsize=20)
 
 	fig = plt.figure(figsize=(10,3));
-	matplotlib.rc('xtick', labelsize=20) 
+	matplotlib.rc('xtick', labelsize=20)
 	matplotlib.rc('ytick', labelsize=20)
 
 	plt.subplot(1, 4, 1)
@@ -173,7 +173,7 @@ def plot3d(pixels, colors_rgb,
 
 def plot_org_and_3d(img, pixels, colors_rgb,
 				axis_labels=list("RGB"), axis_limits=[(0, 255), (0, 255), (0, 255)]):
-	
+
 	fig = plt.figure(figsize=(20, 10))
 	ax_1 = fig.add_subplot(1, 2, 1)
 	fig.tight_layout()
@@ -183,7 +183,7 @@ def plot_org_and_3d(img, pixels, colors_rgb,
 	ax_1.set_title('Original Image:\n', fontsize=30)
 
 	ax_2 = fig.add_subplot(1, 2, 2, projection='3d')
-	ax_2.text2D(0.15, 0.99, "Color Distribution:\n", 
+	ax_2.text2D(0.15, 0.99, "Color Distribution:\n",
 					transform=ax_2.transAxes, fontsize=30)
 
 	# Set axis limits
@@ -195,7 +195,7 @@ def plot_org_and_3d(img, pixels, colors_rgb,
 	ax_2.tick_params(axis='both', which='major', labelsize=30, pad=8)
 	ax_2.set_xlabel(axis_labels[0], fontsize=30, labelpad=20)
 	ax_2.set_ylabel(axis_labels[1], fontsize=30, labelpad=20)
-	ax_2.set_zlabel(axis_labels[2], fontsize=30, labelpad=20)	
+	ax_2.set_zlabel(axis_labels[2], fontsize=30, labelpad=20)
 
 	# Plot pixel values with colors given in colors_rgb
 	ax_2.scatter(
@@ -233,7 +233,7 @@ def create_sample_color_space_img(cars, rand = 0, img=None):
 
 	return img
 
-# Define a function to compute color histogram features  
+# Define a function to compute color histogram features
 # Pass the color_space flag as 3-letter all caps string
 # like 'HSV' or 'LUV' etc.
 def bin_spatial(img, color_space='RGB', size=(32, 32)):
@@ -249,9 +249,9 @@ def bin_spatial(img, color_space='RGB', size=(32, 32)):
 			feature_image = cv2.cvtColor(img, cv2.COLOR_RGB2YUV)
 		elif color_space == 'YCrCb':
 			feature_image = cv2.cvtColor(img, cv2.COLOR_RGB2YCrCb)
-	else: feature_image = np.copy(img)             
+	else: feature_image = np.copy(img)
 	# Use cv2.resize().ravel() to create the feature vector
-	features = cv2.resize(feature_image, size).ravel() 
+	features = cv2.resize(feature_image, size).ravel()
 	# Return the feature vector
 	return feature_image, features
 
@@ -260,7 +260,7 @@ def create_sample_binning_image(cars, rand = 0, img=None):
 		choice = np.random.randint(0, len(cars))
 		img = cv2.imread(cars[choice])
 
-	feature_image, features = bin_spatial(img, size=(8, 8))
+	feature_image, features = bin_spatial(img, size=(32, 32))
 
 	fig = plt.figure(figsize=(20, 10))
 	ax_1 = fig.add_subplot(1, 3, 1)
@@ -275,9 +275,9 @@ def create_sample_binning_image(cars, rand = 0, img=None):
 	ax_2.set_title('Spatial Binning:\n', fontsize=20)
 
 	ax_3 = fig.add_subplot(1, 3, 3)
-	small_img = cv2.resize(img, (8, 8))
+	small_img = cv2.resize(img, (32, 32))
 	ax_3.imshow(small_img)
-	ax_3.set_title('8 x 8:\n', fontsize=20)
+	ax_3.set_title('32 x 32:\n', fontsize=20)
 
 	plt.subplots_adjust(left=0, right=1, top=1, bottom=0)
 	plt.savefig('output_images/sample_spatial_binning_image.png', bbox_inches="tight")
@@ -293,7 +293,7 @@ def gradient_features(img, sobel_kernel=9, mag_threshold=(60, 255)):
 	scale_factor = np.max(gradmag)/255
 	gradmag = (gradmag/scale_factor).astype(np.uint8)
 	binary_output = np.zeros_like(gradmag)
-	binary_output[(gradmag >= mag_threshold[0]) & 
+	binary_output[(gradmag >= mag_threshold[0]) &
 					(gradmag <= mag_threshold[1])] = 1
 	return binary_output
 
@@ -321,8 +321,8 @@ def create_sample_gradient_image(cars, rand=0, img=None):
 
 	return img
 
-def get_hog_features(img, 
-				orientations=9, 
+def get_hog_features(img,
+				orientations=9,
 				pixels_per_cell=(8,8),
 				cells_per_block=(2,2),
 				visualise=False,
@@ -357,7 +357,7 @@ def create_sample_hog_image(caars, rand=0, img=None):
 	features, hog_image = get_hog_features(hog_img, visualise=True)
 
 	fig = plt.figure(figsize=(12, 5))
-	
+
 	fig.add_subplot(1, 2, 1)
 	matplotlib.rc('xtick', labelsize=20)
 	matplotlib.rc('ytick', labelsize=20)
@@ -379,13 +379,13 @@ def extract_features_pipeline(images,
 					hog_feature=True,
 					spatial_size=(32, 32),
 					hist_bins=32,
-					hist_range=(0, 256), 
-					orientations=9, 
+					hist_range=(0, 256),
+					orientations=9,
 					pixels_per_cell=(8,8),
 					cells_per_block=(2,2),
 					hog_channel=0):
-	
-	
+
+
 	features = []
 
 	for file in tqdm(images):
@@ -451,8 +451,8 @@ def extract_features_pipeline_for_single_image(img,
 					hog_feature=True,
 					spatial_size=(32, 32),
 					hist_bins=32,
-					hist_range=(0, 256), 
-					orientations=9, 
+					hist_range=(0, 256),
+					orientations=9,
 					pixels_per_cell=(8,8),
 					cells_per_block=(2,2),
 					hog_channel=0):
@@ -605,10 +605,10 @@ def draw_boxes(img, bboxes, color=(0,0,255), thickness=6):
 
 
 # Define a function that takes an image,
-# start and stop positions in both x and y, 
-# window size (x and y dimensions),  
+# start and stop positions in both x and y,
+# window size (x and y dimensions),
 # and overlap fraction (for both x and y)
-def slide_window(img, x_start_stop=[None, None], y_start_stop=[None, None], 
+def slide_window(img, x_start_stop=[None, None], y_start_stop=[None, None],
                     xy_window=(64, 64), xy_overlap=(0.5, 0.5)):
     # If x and/or y start/stop positions not defined, set to image size
     if x_start_stop[0] == None:
@@ -619,7 +619,7 @@ def slide_window(img, x_start_stop=[None, None], y_start_stop=[None, None],
         y_start_stop[0] = int(img.shape[0]*0.45)
     if y_start_stop[1] == None:
         y_start_stop[1] = int(img.shape[0]*0.9)
-    # Compute the span of the region to be searched    
+    # Compute the span of the region to be searched
     xspan = x_start_stop[1] - x_start_stop[0]
     yspan = y_start_stop[1] - y_start_stop[0]
     # Compute the number of pixels per step in x/y
@@ -628,8 +628,8 @@ def slide_window(img, x_start_stop=[None, None], y_start_stop=[None, None],
     # Compute the number of windows in x/y
     nx_buffer = np.int(xy_window[0]*(xy_overlap[0]))
     ny_buffer = np.int(xy_window[1]*(xy_overlap[1]))
-    nx_windows = np.int((xspan-nx_buffer)/nx_pix_per_step) 
-    ny_windows = np.int((yspan-ny_buffer)/ny_pix_per_step) 
+    nx_windows = np.int((xspan-nx_buffer)/nx_pix_per_step)
+    ny_windows = np.int((yspan-ny_buffer)/ny_pix_per_step)
     # Initialize a list to append window positions to
     window_list = []
     # Loop through finding x and y window positions
@@ -658,13 +658,13 @@ def create_sample_windows_image():
 	plt.title('Slideing Windows:\n', fontsize=15)
 	plt.savefig('output_images/sample_windows_image_test5.png')
 
-# Define a function you will pass an image 
+# Define a function you will pass an image
 # and the list of windows to be searched (output of slide_windows())
-def search_windows(img, windows, clf, scaler, color_space='RGB', 
-					spatial_size=(32, 32), hist_bins=32, 
-					hist_range=(0, 256), orient=9, 
-					pix_per_cell=8, cell_per_block=2, 
-					hog_channel=0, spatial_feat=True, 
+def search_windows(img, windows, clf, scaler, color_space='RGB',
+					spatial_size=(32, 32), hist_bins=32,
+					hist_range=(0, 256), orient=9,
+					pix_per_cell=8, cell_per_block=2,
+					hog_channel=0, spatial_feat=True,
 					hist_feat=True, hog_feat=True):
 
 	#1) Create an empty list to receive positive detection windows
@@ -672,16 +672,16 @@ def search_windows(img, windows, clf, scaler, color_space='RGB',
 	#2) Iterate over all windows in the list
 	for window in windows:
 		#3) Extract the test window from original image
-		test_img = cv2.resize(img[window[0][1]:window[1][1], window[0][0]:window[1][0]], (64, 64))      
+		test_img = cv2.resize(img[window[0][1]:window[1][1], window[0][0]:window[1][0]], (64, 64))
 		#4) Extract features for that window using single_img_features()
-		features = extract_features_pipeline_for_single_image(test_img, 
+		features = extract_features_pipeline_for_single_image(test_img,
 								color_space=color_space,
-								histogram_feature=hist_feat, 
+								histogram_feature=hist_feat,
 								spatial_feature=spatial_feat,
-								hog_feature=hog_feat, 
+								hog_feature=hog_feat,
 								spatial_size=spatial_size,
-								hist_bins=hist_bins, 
-								orientations=orient, 
+								hist_bins=hist_bins,
+								orientations=orient,
 								pixels_per_cell=pix_per_cell,
 								cells_per_block=cell_per_block,
 								hog_channel=hog_channel)
@@ -716,8 +716,8 @@ def whole_pipeline(cars, not_cars):
 						hog_feature=hog_feat,
 						spatial_size=spatial_size,
 						hist_bins=hist_bins,
-						hist_range=(0, 256), 
-						orientations=orientations, 
+						hist_range=(0, 256),
+						orientations=orientations,
 						pixels_per_cell=pixels_per_cell,
 						cells_per_block=cells_per_block,
 						hog_channel=hog_channel)
@@ -729,8 +729,8 @@ def whole_pipeline(cars, not_cars):
 						hog_feature=hog_feat,
 						spatial_size=spatial_size,
 						hist_bins=hist_bins,
-						hist_range=(0, 256), 
-						orientations=orientations, 
+						hist_range=(0, 256),
+						orientations=orientations,
 						pixels_per_cell=pixels_per_cell,
 						cells_per_block=cells_per_block,
 						hog_channel=hog_channel)
@@ -750,7 +750,7 @@ def whole_pipeline(cars, not_cars):
 	print('Using:', orientations, 'orientations', pixels_per_cell,
 		'pixels per cell and', cells_per_block, 'cells per block')
 	print('Feature vector length:', len(X_train[0]))
-	
+
 	svc_classifier = svm_classifier(X_train, X_test, y_train, y_test)
 
 	img = mpimg.imread('test_images/test4.jpg')
@@ -760,21 +760,21 @@ def whole_pipeline(cars, not_cars):
 	# Search image is a .jpg (scaled 0 to 255)
 	img = img.astype(np.float32)/255
 
-	windows = slide_window(img, x_start_stop=[None, None], y_start_stop=y_start_stop, 
+	windows = slide_window(img, x_start_stop=[None, None], y_start_stop=y_start_stop,
 							xy_window=(64, 64), xy_overlap=(0.85, 0.85))
 
-	hot_windows = search_windows(img, windows, svc_classifier, X_scaler, color_space=color_space, 
-								spatial_size=spatial_size, hist_bins=hist_bins, 
-								orient=orientations, pix_per_cell=pixels_per_cell, 
-								cell_per_block=cells_per_block, 
-								hog_channel=hog_channel, spatial_feat=spatial_feat, 
+	hot_windows = search_windows(img, windows, svc_classifier, X_scaler, color_space=color_space,
+								spatial_size=spatial_size, hist_bins=hist_bins,
+								orient=orientations, pix_per_cell=pixels_per_cell,
+								cell_per_block=cells_per_block,
+								hog_channel=hog_channel, spatial_feat=spatial_feat,
 								hist_feat=hist_feat, hog_feat=hog_feat)
 
-	window_img = draw_boxes(draw_img, hot_windows)      
+	window_img = draw_boxes(draw_img, hot_windows)
 
-	
+
 	f = plt.figure(figsize=(20, 5))
-	matplotlib.rc('xtick', labelsize=30) 
+	matplotlib.rc('xtick', labelsize=30)
 	matplotlib.rc('ytick', labelsize=30)
 
 	plt.subplot(1, 2, 1)
@@ -868,7 +868,7 @@ def create_sample_labeled_image(labels):
 	plt.savefig('output_images/sample_labeled_image.png')
 
 
-# data_exploration(vehicles, non_vehicles)
+data_exploration(vehicles, non_vehicles)
 # X_train, X_test, y_train, y_test = data_preprocess(vehicles, non_vehicles)
 # svc_classifier = svm_classifier(X_train, X_test, y_train, y_test)
 # create_sample_windows_image()
@@ -881,143 +881,3 @@ def create_sample_labeled_image(labels):
 # window_img, bbox_list = whole_pipeline(vehicles, non_vehicles)
 # labels = create_sample_heat_map_image(window_img, bbox_list)
 # create_sample_labeled_image(labels)
-
-
-def BGRtoYUV(img):
-	return cv2.cvtColor(img, cv2.COLOR_BGR2YUV)
-
-
-
-
-def classifier_for_video(cars, not_cars):
-	color_space = 'LUV'
-	hist_feat = True
-	spatial_feat = True
-	hog_feat = True
-	spatial_size = (16, 16)
-	hist_bins = 16
-	orientations = 9
-	pixels_per_cell = (16, 16)
-	cells_per_block = (4, 4)
-	hog_channel = 'ALL'
-	y_start_stop = [None, None]
-
-	car_features  = extract_features_pipeline(cars,
-						color_space=color_space,
-						histogram_feature=hist_feat,
-						spatial_feature=spatial_feat,
-						hog_feature=hog_feat,
-						spatial_size=spatial_size,
-						hist_bins=hist_bins,
-						hist_range=(0, 256), 
-						orientations=orientations, 
-						pixels_per_cell=pixels_per_cell,
-						cells_per_block=cells_per_block,
-						hog_channel=hog_channel)
-
-	non_car_features = extract_features_pipeline(not_cars,
-						color_space=color_space,
-						histogram_feature=hist_feat,
-						spatial_feature=spatial_feat,
-						hog_feature=hog_feat,
-						spatial_size=spatial_size,
-						hist_bins=hist_bins,
-						hist_range=(0, 256), 
-						orientations=orientations, 
-						pixels_per_cell=pixels_per_cell,
-						cells_per_block=cells_per_block,
-						hog_channel=hog_channel)
-
-	X = np.vstack((car_features, non_car_features)).astype(np.float64)
-	X_scaler = StandardScaler().fit(X)
-	scaled_X = X_scaler.transform(X)
-
-	y = np.hstack((np.ones(len(car_features)), np.zeros(len(non_car_features))))
-
-	print('scaled_X: {0}'.format(scaled_X.shape))
-	print('y: {0}'.format(y.shape))
-
-	# split the data
-	rand_state = np.random.randint(0, 10)
-	X_train, X_test, y_train, y_test = train_test_split(scaled_X, y,test_size=0.2,random_state=rand_state)
-	print('Using:', orientations, 'orientations', pixels_per_cell,
-		'pixels per cell and', cells_per_block, 'cells per block')
-	print('Feature vector length:', len(X_train[0]))
-	
-	svc_classifier = svm_classifier(X_train, X_test, y_train, y_test)
-
-	return X_scaler, svc_classifier
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-X_scaler, svc_classifier = classifier_for_video(vehicles, non_vehicles)
-count = 0
-
-def video_pipeline(img):
-	color_space = 'LUV'
-	hist_feat = True
-	spatial_feat = True
-	hog_feat = True
-	spatial_size = (16, 16)
-	hist_bins = 16
-	orientations = 9
-	pixels_per_cell = (16, 16)
-	cells_per_block = (4, 4)
-	hog_channel = 'ALL'
-	y_start_stop = [None, None]
-
-	# imgplot = plt.imshow(img)
-	# plt.show()
-
-	draw_img = np.copy(img)
-
-	# Training Data extracted from .png images (scaled 0 to 1 by mpimg)
-	# Search image is a .jpg (scaled 0 to 255)
-	img = img.astype(np.float32)/255
-
-	windows = slide_window(img, x_start_stop=[None, None], y_start_stop=y_start_stop, 
-							xy_window=(64, 64), xy_overlap=(0.85, 0.85))
-
-	hot_windows = search_windows(img, windows, svc_classifier, X_scaler, color_space=color_space, 
-								spatial_size=spatial_size, hist_bins=hist_bins, 
-								orient=orientations, pix_per_cell=pixels_per_cell, 
-								cell_per_block=cells_per_block, 
-								hog_channel=hog_channel, spatial_feat=spatial_feat, 
-								hist_feat=hist_feat, hog_feat=hog_feat)
-
-	window_img = draw_boxes(draw_img, hot_windows)
-
-	# create heatmap
-	heatmap = np.zeros_like(img[:,:,0].astype(np.float))
-
-	heatmap = add_heat(heatmap, hot_windows)
-	heatmap = apply_threshold(heatmap)
-	heatmap = np.clip(heatmap-2, 0, 255)
-
-	labels = label(heatmap)
-
-	# draw labeled boxes
-	draw_img = np.copy(img)
-	draw_img = draw_labeled_bboxes(draw_img, labels)
-
-	imgplot = plt.imshow(draw_img)
-	plt.savefig('output_images/video/video'+ str(np.random.randint(0, 90000)) + '.png')
-
-	return draw_img
-
-video_output = 'P5_test_video.mp4'
-clip = VideoFileClip('test_video.mp4')
-
-output_clip = clip.fl_image(video_pipeline) #color images only
-output_clip.write_videofile(video_output, audio=False)

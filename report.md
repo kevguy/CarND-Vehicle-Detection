@@ -14,7 +14,7 @@
 The goals / steps of this project are the following:
 
 * Perform a Histogram of Oriented Gradients (HOG) feature extraction on a labeled training set of images and train a classifier Linear SVM classifier
-* Optionally, you can also apply a color transform and append binned color features, as well as histograms of color, to your HOG feature vector. 
+* Optionally, you can also apply a color transform and append binned color features, as well as histograms of color, to your HOG feature vector.
 * Note: for those first two steps don't forget to normalize your features and randomize a selection for training and testing.
 * Implement a sliding-window technique and use your trained classifier to search for vehicles in images.
 * Run your pipeline on a video stream (start with the test_video.mp4 and later implement on full project_video.mp4) and create a heat map of recurring detections frame by frame to reject outliers and follow detected vehicles.
@@ -23,7 +23,7 @@ The goals / steps of this project are the following:
 
 
 ## [Rubric](https://review.udacity.com/#!/rubrics/513/view) Points
-###Here I will consider the rubric points individually and describe how I addressed each point in my implementation. 
+###Here I will consider the rubric points individually and describe how I addressed each point in my implementation.
 
 ### 1: Data Preprocession
 
@@ -59,7 +59,30 @@ The previous techniques were only manipulating and transforming color values and
 ![sample_hog]
 
 #### Training and Testing Set
-Data is normalized, randomized and splitted into training set and testing by a proportion of 
+Data is normalized, randomized and splitted into training set and testing by a proportion of
+
+
+### SVC Classifier
+After the step of preprocessing, the data is fed into a SVC classifier to classify between 'vehicles' and 'non-vehicles'. On average, the classifier gives an accuracy of 98%.
+
+### Sliding Windows Search
+An image is 'divided' into four partially overlapping zones with different sliding window sizes to account for different distances, which are 240, 180, 12, 70 pixels for each zone.
+
+### Heatmap
+The boxes for every last 30 frames are saved, and then heatmaps are added to help eliminate false positives by applying a threshold of 17. Bounding boxes are then finally drawn to cover the area of each vehicle detected, which equivalently are the highlighted areas on the heatmaps.
+
+## Video
+
+
+
+
+## Discussion
+I spent a lot of time tuning the parameters, like heatmaps' threshold, and the only way that I could finally make everything work is by adding and tuning how many frames I have to save for the boxes. To be frank, I was kinda surprised how much of a role SVC classifier and HOG play in this task.
+
+
+
+
+
 
 
 # MacDown
@@ -94,7 +117,7 @@ Before I tell you about all the extra syntaxes and capabilities I have, I'll int
 ### Line Breaks
 To force a line break, put two spaces and a newline (return) at the end of the line.
 
-* This two-line bullet 
+* This two-line bullet
 won't break
 
 * This two-line bullet  
@@ -103,7 +126,7 @@ will break
 Here is the code:
 
 ```
-* This two-line bullet 
+* This two-line bullet
 won't break
 
 * This two-line bullet  
@@ -151,7 +174,7 @@ Sometimes it looks too messy to include big long urls inline, or you want to kee
 
 Make [a link][arbitrary_id] `[a link][arbitrary_id]` then on it's own line anywhere else in the file:  
 `[arbitrary_id]: http://macdown.uranusjr.com "Title"`
-  
+
 If the link text itself would make a good id, you can link [like this][] `[like this][]`, then on it's own line anywhere else in the file:  
 `[like this]: http://macdown.uranusjr.com`  
 
@@ -225,8 +248,8 @@ there are no empty lines between paragraphs.
 > * [Links][arbitrary_id]
 > * Etc.
 ```
-  
-  
+
+
 ### Inline Code
 `Inline code` is indicated by surrounding it with backticks:  
 `` `Inline code` ``
@@ -317,7 +340,7 @@ Superscript         | hoge\^(fuga)     | hoge<sup>fuga</sup>   |
 Autolink            | http://t.co      | <http://t.co>         |
 Footnotes           | [\^4] and [\^4]: | [^4] and footnote 4   |
 
-[^4]: You don't have to use a number. Arbitrary things like `[^footy note4]` and `[^footy note4]:` will also work. But they will *render* as numbered footnotes. Also, no need to keep your footnotes in order, I will sort out the order for you so they appear in the same order they were referenced in the text body. You can even keep some footnotes near where you referenced them, and collect others at the bottom of the file in the traditional place for footnotes. 
+[^4]: You don't have to use a number. Arbitrary things like `[^footy note4]` and `[^footy note4]:` will also work. But they will *render* as numbered footnotes. Also, no need to keep your footnotes in order, I will sort out the order for you so they appear in the same order they were referenced in the text body. You can even keep some footnotes near where you referenced them, and collect others at the bottom of the file in the traditional place for footnotes.
 
 
 
@@ -404,12 +427,10 @@ That’s about it. Thanks for listening. I’ll be quiet from now on (unless the
 Happy writing!
 
 
-[^emphasize]: If **Underlines** is turned on, `_this notation_` will render as underlined instead of emphasized 
+[^emphasize]: If **Underlines** is turned on, `_this notation_` will render as underlined instead of emphasized
 
 [^under]: If **Underline** is disabled `_this_` will be rendered as *emphasized* instead of being underlined.
 
 [^quote]: **Quote** replaces literal `"` characters with html `<q>` tags. **Quote** and **Smartypants** are syntactically incompatible. If both are enabled, **Quote** takes precedence. Note that **Quote** is different from *blockquote*, which is part of standard Markdown.
 
 [^math]: Internet connection required.
-
-
