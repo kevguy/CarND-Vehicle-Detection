@@ -55,7 +55,7 @@ Through analyzing the color distribution of an image, we can find cluster of col
 
 **1.1.3: Spatial Binning**
 
-Spatial binning can lower the resolution of an image while still making sure an object is identificable. This can potentially speed up training.
+Spatial binning can lower the resolution of an image while still making sure an object is identifiable. This can potentially speed up training.
 
 ![sample_spatial_binning]
 
@@ -70,7 +70,10 @@ The previous techniques were only manipulating and transforming color values and
 ![sample_hog]
 
 #### Training and Testing Set
-Data is normalized, randomized and splitted into training set and testing by a proportion of
+Data is normalized, randomized and splitted into training set and testing as follows:
+
+*
+*
 
 
 ### SVC Classifier
@@ -91,7 +94,7 @@ The boxes for every last 30 frames are saved, and then heatmaps are added to hel
 ![heat_map4]
 
 ## Video
-
+[output_images/processed_project-video.mp4](https://github.com/kevguy/CarND-Vehicle-Detection/raw/master/output_images/processed_project_video.mp4)
 
 
 
