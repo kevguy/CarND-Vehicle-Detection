@@ -7,7 +7,18 @@
 [sample_spatial_binning]: https://github.com/kevguy/CarND-Vehicle-Detection/raw/master/output_images/sample_spatial_binning_image.png
 [sample_gradient]: https://github.com/kevguy/CarND-Vehicle-Detection/raw/master/output_images/sample_gradient_image.png
 [sample_hog]: https://github.com/kevguy/CarND-Vehicle-Detection/raw/master/output_images/sample_hog_image.png
-
+[heat_map0]:https://github.com/kevguy/CarND-Vehicle-Detection/raw/master/output_images/new_heat_map0.png
+[heat_map1]:https://github.com/kevguy/CarND-Vehicle-Detection/raw/master/output_images/new_heat_map1.png
+[heat_map2]:https://github.com/kevguy/CarND-Vehicle-Detection/raw/master/output_images/new_heat_map2.png
+[heat_map3]:https://github.com/kevguy/CarND-Vehicle-Detection/raw/master/output_images/new_heat_map3.png
+[heat_map4]:https://github.com/kevguy/CarND-Vehicle-Detection/raw/master/output_images/new_heat_map4.png
+[heat_map5]:https://github.com/kevguy/CarND-Vehicle-Detection/raw/master/output_images/new_heat_map5.png
+[sliding_window0]:https://github.com/kevguy/CarND-Vehicle-Detection/raw/master/output_images/new_sliding_windows0.png
+[sliding_window1]:https://github.com/kevguy/CarND-Vehicle-Detection/raw/master/output_images/new_sliding_windows1.png
+[sliding_window2]:https://github.com/kevguy/CarND-Vehicle-Detection/raw/master/output_images/new_sliding_windows2.png
+[sliding_window3]:https://github.com/kevguy/CarND-Vehicle-Detection/raw/master/output_images/new_sliding_windows3.png
+[sliding_window4]:https://github.com/kevguy/CarND-Vehicle-Detection/raw/master/output_images/new_sliding_windows4.png
+[sliding_window5]:https://github.com/kevguy/CarND-Vehicle-Detection/raw/master/output_images/new_sliding_windows5.png
 ### Project 5 - Vehicle Detection and Tracking
 **Vehicle Detection Project**
 
@@ -68,8 +79,16 @@ After the step of preprocessing, the data is fed into a SVC classifier to classi
 ### Sliding Windows Search
 An image is 'divided' into four partially overlapping zones with different sliding window sizes to account for different distances, which are 240, 180, 12, 70 pixels for each zone.
 
+![sliding_window3]
+
+![sliding_window4]
+
 ### Heatmap
 The boxes for every last 30 frames are saved, and then heatmaps are added to help eliminate false positives by applying a threshold of 17. Bounding boxes are then finally drawn to cover the area of each vehicle detected, which equivalently are the highlighted areas on the heatmaps.
+
+![heat_map3]
+
+![heat_map4]
 
 ## Video
 
