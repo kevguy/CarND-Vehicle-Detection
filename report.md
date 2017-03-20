@@ -72,9 +72,11 @@ The previous techniques were only manipulating and transforming color values and
 #### Training and Testing Set
 Data is normalized, randomized and splitted into training set and testing as follows:
 
-*
-*
-
+|                 | Cars    | Not cars | Total  |
+|:-------------   |:-------:| --------:| ------:|
+| Training set    | 6152    |     6277 | 12429  |
+| Validation set  | 1759    |     1794 |  3553  |
+| Testing set     | 881     |      897 |  1778  |
 
 ### SVC Classifier
 After the step of preprocessing, the data is fed into a SVC classifier to classify between 'vehicles' and 'non-vehicles'. On average, the classifier gives an accuracy of 98%.
